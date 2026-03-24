@@ -1,0 +1,3 @@
+n8n.velocyt.ca {
+    reverse_proxy n8n:5678
+}
