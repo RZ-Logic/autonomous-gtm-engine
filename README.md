@@ -6,7 +6,7 @@ An enterprise-grade, closed-loop Go-To-Market (GTM) automation engine built for 
 
 ## 👥 Who This Is For
 
-* Sales teams with 1–5 SDRs running outbound at scale (5k–50k leads/month)
+* B2B companies running outbound at any scale — from lean teams replacing manual SDR workflows to large sales orgs processing tens of thousands of leads per month
 * Companies already using Apollo.io + Clay (or similar enrichment tools) for prospecting
 * Teams that want human-in-the-loop approval over AI-generated outreach — not fully autonomous sending
 * Operators who need a transparent audit trail for every action the system takes
