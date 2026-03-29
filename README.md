@@ -150,6 +150,41 @@ Every step above generates a Shadow Ledger entry. If any step fails, the Error T
 * **Rate Limits:** The Executor polls at 1-minute intervals, processing one record per cycle. At scale, this can be adjusted by switching to batch processing or reducing the polling interval. OpenAI gpt-4o-mini handles high concurrency; Resend's rate limits are the binding constraint for email throughput
 * **Scaling:** For volumes beyond 50k leads/month, the architecture supports horizontal scaling by adding n8n worker nodes and partitioning the Airtable pipeline by campaign or region
 
+## 🚀 Future Roadmap (V2.0)
+
+### Ingestion & Enrichment Enhancements
+
+* **LinkedIn Signal Enrichment:** Add a second Clay enrichment layer that pulls each prospect's recent LinkedIn activity — job changes, posts about scaling, hiring announcements. This feeds into the AI scoring prompt as an additional intent signal alongside website text, improving scoring accuracy for leads who are actively signaling pain.
+
+* **Negative Signal Filtering:** Add a pre-scoring disqualification layer. If Clay's enrichment reveals recent layoffs, bankruptcy filings, or a headcount mismatch from Apollo, the lead is auto-disqualified before consuming an OpenAI call — reducing API cost and keeping the pipeline clean.
+
+* **Competitor Stack Detection:** Leverage Clay's technographic data to detect prospects already running n8n, Make, or Zapier Enterprise internally. Flag these as lower priority or route them to a differentiated email template that positions Velocyt as an augmentation partner rather than a replacement.
+
+### Email & Outreach Optimization
+
+* **Multi-Variable Personalization:** Extend email drafts beyond a single Clay icebreaker. Extract the prospect's specific pain point from the AI scoring reasoning (e.g., "multi-jurisdiction regulatory compliance") and inject it as a second personalization variable, making every email feel hand-written for the recipient's exact situation.
+
+* **A/B Draft Generation:** Generate two email variants per lead — one direct, one consultative — and store both in Airtable. The operator selects the best tone during the approval step. The Weekly Audit tracks which variant drives more replies, feeding conversion data back into template optimization over time.
+
+* **Industry-Specific Template Library:** Replace generic VIP and Standard templates with industry-keyed drafts. Financial services prospects receive compliance-focused language, SaaS prospects receive scaling-focused language, logistics prospects receive operations-focused language. The Lead Scoring workflow already knows the industry from Clay's enrichment — this automates template selection.
+
+### New Modules
+
+* **Automated Follow-Up Sequencer:** A scheduled workflow monitors "Sent" records with no engagement change after 7 days and triggers a follow-up email with different copy but the same personalization. Capped at 2-3 follow-ups before auto-archiving. This single module is projected to significantly increase reply rates by re-engaging prospects who missed or deprioritized the initial outreach.
+
+* **LinkedIn Multi-Channel Touchpoint:** Before or after the email send, trigger a LinkedIn connection request via Phantombuster or HeyReach. Multi-channel outreach (email + LinkedIn) consistently outperforms single-channel. The system logs the LinkedIn touch as a Channel in Airtable, enabling the Weekly Audit to compare conversion rates across channels and optimize the outreach mix.
+
+* **Warm Lead Re-Engagement:** When the Weekly Audit flags leads that opened but never replied, auto-generate a shorter, more direct follow-up acknowledging the open signal. This is the outbound equivalent of Immi-OS's Market Watchdog reactivation — turning dormant engagement into active conversations.
+
+### Platform & Scale
+
+* **Multi-Tenant Deployment:** Architect the engine as a deployable template — each client receives their own Airtable base, n8n instance, and Slack workspace while sharing the same workflow architecture. Deploy once, customize per client.
+
+* **Campaign Partitioning:** For volumes beyond 50k leads/month, partition the Airtable pipeline by campaign, region, or vertical. Each partition runs its own Executor polling cycle and scoring rubric, enabling independent optimization per segment without cross-contamination.
+
+* **Real-Time Performance Dashboard:** Build a Softr or Retool interface that visualizes pipeline velocity, reply rates by score bucket, engagement funnel drop-off, and cumulative API spend — giving operators a single-pane view of system health without opening Airtable or Slack.
+
+
 ## 📂 Repository Contents
 * `/assets`: System screenshots, architecture diagrams, and Slack alert examples.
 * `/infrastructure`: The `docker-compose.yml` and `Caddyfile` used for the DigitalOcean deployment.
